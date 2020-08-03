@@ -1,6 +1,5 @@
 module.exports = {
-    entry: './src/index.ts',
-    mode: "production",
+    mode: 'production',
     devtool: 'inline-source-map',
     watch: false,
     module: {
@@ -15,7 +14,17 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js']
     },
-    output: {
-        filename: "index.js",
+    entry: {
+        content: './src/content.ts',
+        background: './src/background.ts',
+        popup: './src/popup.ts'
     },
+    output: {
+        filename: '[name].js'
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        }
+    }
 };
