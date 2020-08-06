@@ -1,19 +1,35 @@
 const element_list = ['fief_x', 'fief_y', 'first_x', 'first_y', 'last_x', 'last_y', 'n_troops'];
 
 
+function set_status(message: string='Esperando instrucciones'): void {
+    let element = document.getElementById('status') as HTMLInputElement;
+    element.value = message;
+}
+
+function set_inputs_status(is_disabled: boolean): void {
+    for (let id of element_list) {
+        let element = document.getElementById(id) as HTMLInputElement;
+        element.disabled = is_disabled;
+    }
+}
+
+
 function reload_data() {
+    set_status('Cargando...');
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
         chrome.tabs.sendMessage(tabs[0].id, 'reload', response => {
             for (const key of element_list) {
                 let element = document.getElementById(key) as HTMLInputElement;
                 element.value = response[key];
             }
+            set_status();
         });
     });
 }
 
 
 function update_data() {
+    set_status('...');
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
         let payload = {};
         for (const key of element_list) {
@@ -21,14 +37,19 @@ function update_data() {
             payload[key] = element.value;
         }
         chrome.tabs.sendMessage(tabs[0].id, payload, response => {
+            set_status();
         });
     });
 }
 
 
 function trigger_spread() {
+    set_inputs_status(true);
+    set_status('Esparciendo...');
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
         chrome.tabs.sendMessage(tabs[0].id, 'spread', response => {
+            set_status('Finalizado');
+            set_inputs_status(false);
         });
     });
 }
