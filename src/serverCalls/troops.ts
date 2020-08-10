@@ -1,8 +1,9 @@
 import {XYPair} from "../dataContainers";
-import {ServerCallUtils} from "./utils";
+import {post} from "./utils";
+
 
 export async function split_troop(troop_id: number, n_remaining_units: number): Promise<void> {
-    await ServerCallUtils.post('/api/acciones/tropas/separar', {
+    await post('/api/acciones/tropas/separar', {
         idTropa: troop_id,
         cantidadgrupo: n_remaining_units
     });
@@ -10,7 +11,7 @@ export async function split_troop(troop_id: number, n_remaining_units: number): 
 
 
 export async function move_troop(troop_id: number, fief: XYPair, destination: XYPair): Promise<void> {
-    await ServerCallUtils.post('/api/acciones/tropas/mover', {
+    await post('/api/acciones/tropas/mover', {
         x: fief.x,
         y: fief.y,
         xdestino: destination.x,
