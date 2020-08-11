@@ -1,5 +1,5 @@
 import {SpreadTroops} from "./features/spreadTroops";
-import {XYPair} from "./dataContainers";
+import {FiefData, XYPair} from "./dataContainers";
 import {get_all_owned_fiefs} from "./serverCalls/get_all_owned_fiefs";
 import {read_fief} from "./serverCalls/read_fief";
 import {build_farm} from "./serverCalls/improve_fief";
@@ -51,9 +51,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
   else if ('levelup' == request) {
     levelup()
-    .then(value => {
-      sendResponse(value);
-    });
+        .then(value => {
+          sendResponse(value);
+        });
   }
   else {
     spread_troops_settings = request;
@@ -63,7 +63,34 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
+function filter_fiefs(fiefs: FiefData[], n_farms: number, reserves_per_person: number): FiefData[] {
+  return fiefs.filter((fief: FiefData, index, array) => {
+    return fief.get_reserves_per_person() <= reserves_per_person && fief.farms <= n_farms;
+  });
+}
+
+
 async function run_me() {
+  let fiefs = await get_all_owned_fiefs();
+  fiefs.sort((a: FiefData, b: FiefData) => a.get_reserves_per_person() - b.get_reserves_per_person())
+  const best_fief = await read_fief(fiefs[fiefs.length - 1].location);
+
+  const global_reserves_per_person = best_fief.get_global_reserves_per_person();
+  const quality_of_life_threshold = 1.0;
+  const max_farms = 2;
+  const max_reserves = quality_of_life_threshold * global_reserves_per_person;
+
+  fiefs = filter_fiefs(fiefs, max_farms, max_reserves);
+
+  console.info("Global Reserves per Person:", global_reserves_per_person);
+  for (let n_farms = 0; n_farms <= max_farms; ++n_farms) {
+    const selection = filter_fiefs(fiefs, n_farms, max_reserves);
+    console.info("Fiefs with low reserves:", n_farms, selection.length);
+
+    for (let fief of selection) {
+      // await build_farm(fief.location);
+    }
+  }
 }
 
 run_me().then(value => {console.log("Done");});
