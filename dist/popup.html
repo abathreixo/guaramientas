@@ -3,47 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <title>Guaramientas</title>
+    <style>
+    body{
+      width: 450px;
+      height:450px;
+    }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 </head>
 <body>
-<div><b>Estado: </b><input name="status", id="status" type="text" value="cargando..." disabled="1" />
-<div>
-    <b>Tropas en:</b>
-    <div>
-        <input name="fief_x" id="fief_x" type="number" min=0 max=450 value=0 />
-        &minus;
-        <input name="fief_y" id="fief_y" type="number" min=0 max=450 value=0 />
-    </div>
-</div>
-
-<div>
-    <b>Columnas:</b>
-    <div>
-        <label for="first_x">De </label>
-        <input name="first_x" id="first_x" type="number" min=0 max=450 value=0 />
-        <label for="last_x">a</label>
-        <input name="last_x" id="last_x" type="number" min=0 max=450 value=0 />
-    </div>
-</div>
-
-<div>
-    <b>Filas:</b>
-    <div>
+  <div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="alert alert-primary" role="alert">
+        <b>Estado: </b><span id="status">Cargando...</span>
+      </div>
+      <form>
+        <b>Tropas en:</b>
+        <div class="form-row">
+        <div class="col">
+          <input class="form-control form-control-sm" name="fief_x" id="fief_x" type="number" min=0 max=450 value=0 />
+        </div>
+        <div class="col">
+          <input class="form-control form-control-sm" name="fief_y" id="fief_y" type="number" min=0 max=450 value=0 />
+        </div>
+        </div>
+        <b>Columnas:</b>
+        <div class="form-row">
+        <div class="col">
+          <label for="first_x">De </label>
+          <input class="form-control" name="first_x" id="first_x" type="number" min=0 max=450 value=0 />
+        </div>
+        <div class="col">
+          <label for="last_x">a</label>
+          <input class="form-control" name="last_x" id="last_x" type="number" min=0 max=450 value=0 />
+        </div>
+        </div>
+      <b>Filas:</b>
+      <div class="form-row">
+      <div class="col">
         <label for="first_y">De </label>
-        <input name="first_y" id="first_y" type="number" min=0 max=450 value=0 />
-
+        <input class="form-control" name="first_y" id="first_y" type="number" min=0 max=450 value=0 />
+      </div>
+      <div class="col">
         <label for="last_y">a</label>
-        <input name="last_y" id="last_y" type="number" min=0 max=450 value=0 />
-    </div>
+        <input class="form-control" name="last_y" id="last_y" type="number" min=0 max=450 value=0 />
+      </div>
+      </div>
+      <div class="form-row">
+      <div class="col">
+        <label for="n_troops"><b>Tropas por cada feudo:</b> </label>
+        <input class="form-control" name="n_troops" id="n_troops" type="number" min=0 value=0 />
+        <br>
+        <a id="spread_button" class="btn btn-primary btn-block" href="#">Esparcir</a>
+      </div>
+      </div>
+    </form>
+  </div>
 </div>
-
-<div>
-    <label for="n_troops"><b>Tropas por cada feudo:</b> </label>
-    <input name="n_troops" id="n_troops" type="number" min=0 value=0 />
+<hr>
+<div class="row">
+  <div class="col">
+    <form>
+      <b>Subir 1 Nivel Agricola:</b>
+      <div class="form-row">
+      <div class="col">
+        <label for="type">Terreno</label>
+        <select class="form-control form-control-sm" id="type" name="type">
+          <option value="Río">Río</option>
+          <option value="Llanura">Llanura</option>
+          <option value="Bosque">Bosque</option>
+          <option value="Pantano">Pantano</option>
+          <option value="Desierto">Desierto</option>
+          <option value="Costa">Costa</option>
+          <option value="Montaña">Montaña</option>
+        </select>
+      </div>
+      </div>
+      <div class="form-row">
+      <div class="col">
+        <br>
+        <a id="levelup_button" class="btn btn-primary btn-block" href="#">Subir</a>
+      </div>
+      </div>
+      <br>
+      <a href="https://github.com/abathreixo/guaramientas"><span class="badge badge-primary">Repositorio</span></a>
+    </form>
+  </div>
 </div>
-<button id="spread_button">Esparcir</button>
-
-<a href="https://github.com/abathreixo/guaramientas">Repositorio</a>
-
 </body>
 <script src="popup.js"></script>
 </html>

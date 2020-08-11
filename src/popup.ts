@@ -1,9 +1,9 @@
-const element_list = ['fief_x', 'fief_y', 'first_x', 'first_y', 'last_x', 'last_y', 'n_troops'];
+const element_list = ['fief_x', 'fief_y', 'first_x', 'first_y', 'last_x', 'last_y', 'n_troops', 'type'];
 
 
 function set_status(message: string='Esperando instrucciones'): void {
-    let element = document.getElementById('status') as HTMLInputElement;
-    element.value = message;
+    let element = document.getElementById('status') as HTMLElement;
+    element.innerText = message;
 }
 
 function set_inputs_status(is_disabled: boolean): void {
@@ -53,13 +53,22 @@ function trigger_spread() {
         });
     });
 }
-
+function trigger_levelup() {
+    set_inputs_status(true);
+    set_status('Cargando...');
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        chrome.tabs.sendMessage(tabs[0].id, 'levelup', response => {
+            set_status('Subidos ' + response + ' feudos');
+            set_inputs_status(false);
+        });
+    });
+}
 
 reload_data();
 
 
 document.getElementById('spread_button').addEventListener('click', trigger_spread);
-
+document.getElementById('levelup_button').addEventListener('click', trigger_levelup);
 
 for (const key of element_list) {
     document.getElementById(key).addEventListener('change', update_data);
