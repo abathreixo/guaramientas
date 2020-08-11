@@ -63,4 +63,8 @@ export class CompleteFiefData extends FiefData {
     ) {
         super(location, terrain, children, men, women, elders, farms, villages, last_harvest, reserves, rebellious);
     }
+
+    get_global_reserves_per_person(): number {
+        return this.get_reserves_per_person() / (0.01 * this.displayed_quality_of_life);
+    }
 }
