@@ -1,7 +1,7 @@
 import {SpreadTroops} from "./features/spreadTroops";
+import {CsvDataService} from "./features/csvDataService";
 import {XYPair} from "./dataContainers";
 import {get_all_owned_fiefs} from "./serverCalls/get_all_owned_fiefs";
-import {read_fief} from "./serverCalls/read_fief";
 import {build_farm} from "./serverCalls/improve_fief";
 import {get_money} from "./serverCalls/read_info";
 
@@ -37,6 +37,12 @@ async function levelup(): Promise<number> {
   return upgraded;
 }
 
+async function exportcsv(): Promise<number> {
+  let allFiefs = await get_all_owned_fiefs();
+  CsvDataService.exportToCsv("feudos.csv", allFiefs);
+  return allFiefs.length;
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if ('reload' == request) {
     sendResponse(spread_troops_settings);
@@ -51,6 +57,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
   else if ('levelup' == request) {
     levelup()
+    .then(value => {
+      sendResponse(value);
+    });
+  }
+  else if ('exportcsv' == request) {
+    exportcsv ()
     .then(value => {
       sendResponse(value);
     });
