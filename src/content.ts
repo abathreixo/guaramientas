@@ -70,7 +70,7 @@ function filter_fiefs(fiefs: FiefData[], n_farms: number, reserves_per_person: n
 }
 
 
-async function run_me() {
+async function farm_building() {
   let fiefs = await get_all_owned_fiefs();
   fiefs.sort((a: FiefData, b: FiefData) => a.get_reserves_per_person() - b.get_reserves_per_person())
   const best_fief = await read_fief(fiefs[fiefs.length - 1].location);
@@ -91,6 +91,21 @@ async function run_me() {
       // await build_farm(fief.location);
     }
   }
+}
+
+
+async function spread_troops_all_owned_fiefs(x: number, y: number): Promise<void> {
+  const fiefs = await get_all_owned_fiefs();
+  let all_xy = [];
+  for (let fief of fiefs) {
+    all_xy.push(fief.location);
+  }
+  await SpreadTroops.spread_troops(new XYPair(x, y), all_xy, 1);
+}
+
+
+async function run_me(): Promise<void> {
+  // await spread_troops_all_owned_fiefs(323, 249);
 }
 
 run_me().then(value => {console.log("Done");});
