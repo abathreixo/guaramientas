@@ -64,11 +64,23 @@ function trigger_levelup() {
     });
 }
 
+function trigger_exportcsv() {
+    set_inputs_status(true);
+    set_status('Cargando...');
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        chrome.tabs.sendMessage(tabs[0].id, 'exportcsv', response => {
+            set_status('Exportados ' + response + ' feudos');
+            set_inputs_status(false);
+        });
+    });
+}
+
 reload_data();
 
 
 document.getElementById('spread_button').addEventListener('click', trigger_spread);
 document.getElementById('levelup_button').addEventListener('click', trigger_levelup);
+document.getElementById('exportcsv_button').addEventListener('click', trigger_exportcsv);
 
 for (const key of element_list) {
     document.getElementById(key).addEventListener('change', update_data);

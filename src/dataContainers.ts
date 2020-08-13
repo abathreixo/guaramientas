@@ -5,7 +5,9 @@ export class XYPair {
     ) {
 
     }
-
+    public toString = () : string => {
+      return `${this.x}-${this.y}`;
+    }
 }
 
 
@@ -62,5 +64,9 @@ export class CompleteFiefData extends FiefData {
         public readonly displayed_quality_of_life: number
     ) {
         super(location, terrain, children, men, women, elders, farms, villages, last_harvest, reserves, rebellious);
+    }
+
+    get_global_reserves_per_person(): number {
+        return this.get_reserves_per_person() / (0.01 * this.displayed_quality_of_life);
     }
 }
