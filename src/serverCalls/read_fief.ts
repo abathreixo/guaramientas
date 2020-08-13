@@ -69,8 +69,8 @@ export async function read_fief(location: XYPair): Promise<CompleteFiefData> {
     const farms = extract_span_number(economy, "#A-" + location.x + "-" + location.y);
     const villages = extract_span_number(economy,"#U-" + location.x + "-" + location.y);
 
-    const enough_gold_for_buildings = economy.children.length >= 20;
-    let offset = enough_gold_for_buildings ? 4 : 0;
+    const n_economy_children = economy.children.length;
+    let offset = 20 == n_economy_children ? 4 : n_economy_children == 19 ? 2: 0;
     const reserves = extract_span_number(economy, `span:nth-child(${12 + offset})`);
     const last_harvest = extract_span_number(economy, `span:nth-child(${13 + offset})`);
     const rebellious = null != economy.querySelector(`img:nth-child(${14 + offset})`);
