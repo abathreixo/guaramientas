@@ -1,110 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
     <meta charset="UTF-8">
     <title>Guaramientas</title>
     <style>
     body{
       width: 450px;
-      height:450px;
+      height:650px;
     }
     </style>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-</head>
+    <link rel="stylesheet" href="bower_components/foundation-sites/dist/css/foundation.min.css" />
+    <link rel="stylesheet" href="bower_components/foundation-sites/dist/css/foundation-prototype.min.css" />
+  </head>
 <body>
-  <div class="container">
-  <div class="row">
-    <div class="col">
-      <div class="alert alert-primary" role="alert">
-        <b>Estado: </b><span id="status">Cargando...</span>
-      </div>
-      <form>
-        <b>Tropas en:</b>
-        <div class="form-row">
-        <div class="col">
-          <input class="form-control form-control-sm" name="fief_x" id="fief_x" type="number" min=0 max=450 value=0 />
-        </div>
-        <div class="col">
-          <input class="form-control form-control-sm" name="fief_y" id="fief_y" type="number" min=0 max=450 value=0 />
-        </div>
-        </div>
-        <b>Columnas:</b>
-        <div class="form-row">
-        <div class="col">
-          <label for="first_x">De </label>
-          <input class="form-control" name="first_x" id="first_x" type="number" min=0 max=450 value=0 />
-        </div>
-        <div class="col">
-          <label for="last_x">a</label>
-          <input class="form-control" name="last_x" id="last_x" type="number" min=0 max=450 value=0 />
-        </div>
-        </div>
-      <b>Filas:</b>
-      <div class="form-row">
-      <div class="col">
-        <label for="first_y">De </label>
-        <input class="form-control" name="first_y" id="first_y" type="number" min=0 max=450 value=0 />
-      </div>
-      <div class="col">
-        <label for="last_y">a</label>
-        <input class="form-control" name="last_y" id="last_y" type="number" min=0 max=450 value=0 />
-      </div>
-      </div>
-      <div class="form-row">
-      <div class="col">
-        <label for="n_troops"><b>Tropas por cada feudo:</b> </label>
-        <input class="form-control" name="n_troops" id="n_troops" type="number" min=0 value=0 />
-        <br>
-        <a id="spread_button" class="btn btn-primary btn-block" href="#">Esparcir</a>
-      </div>
-      </div>
-    </form>
-  </div>
+<div class="callout secondary position-fixed-bottom">
+  <span id="status"></span>
 </div>
-<hr>
-<div class="row">
-  <div class="col">
-    <form>
-      <b>Exportar CSV Feudos:</b>
-      <div class="form-row">
-      <div class="col">
-        <br>
-        <a id="exportcsv_button" class="btn btn-primary btn-block" href="#">Exportar</a>
+<form>
+  <div class="grid-container">
+    <br>
+    <h5 class="separator-left">Esparcir tropas</h5>
+    <div class="grid-x grid-padding-x">
+      <div class="cell small-6">
+        <label>Tropas en X:
+          <input  name="fief_x" id="fief_x" type="number" min=0 max=450 value=0 />
+        </label>
       </div>
+      <div class="cell small-6">
+        <label>Tropas en Y:
+          <input  name="fief_y" id="fief_y" type="number" min=0 max=450 value=0 />
+        </label>
       </div>
-    </form>
+    </div>
+    <div class="grid-x grid-padding-x">
+      <div class="cell small-6">
+        <label>Desde la columna:
+          <input  name="first_x" id="first_x" type="number" min=0 max=450 value=0 />
+        </label>
+      </div>
+      <div class="cell small-6">
+        <label>Hasta:
+          <input  name="first_y" id="first_y" type="number" min=0 max=450 value=0 />
+        </label>
+      </div>
+    </div>
+    <div class="grid-x grid-padding-x">
+      <div class="cell small-6">
+        <label>Desde la fila:
+          <input  name="last_x" id="last_x" type="number" min=0 max=450 value=0 />
+        </label>
+      </div>
+      <div class="cell small-6">
+        <label>Hasta:
+          <input  name="last_y" id="last_y" type="number" min=0 max=450 value=0 />
+        </label>
+      </div>
+    </div>
+    <div class="grid-x grid-padding-x">
+      <div class="cell small-6">
+        <label>Tropas en cada feudo:
+          <input  name="n_troops" id="n_troops" type="number" min=0 value=0 />
+        </label>
+      </div>
+      <div class="cell small-6">
+          <a id="spread_button" class="success margin-top-1 expanded button rounded bordered shadow" href="#">Esparcir</a>
+      </div>
+    </div>
+    <div class="grid-x grid-padding-x">
+      <div class="cell small-6">
+        <h5 class="separator-left">Subir Nivel Agricola</h5>
+        <label>Terreno:
+          <select id="type" name="type">
+            <option value="Río">Río</option>
+            <option value="Llanura">Llanura</option>
+            <option value="Bosque">Bosque</option>
+            <option value="Pantano">Pantano</option>
+            <option value="Desierto">Desierto</option>
+            <option value="Costa">Costa</option>
+            <option value="Montaña">Montaña</option>
+          </select>
+        </label>
+        <a id="levelup_button" class="success expanded button rounded bordered shadow" href="#">Subir</a>
+      </div>
+      <div class="cell small-6">
+        <h5 class="separator-left">Exportar CSV con Feudos</h5>
+          <a id="exportcsv_button" class="success  margin-top-2 expanded button rounded bordered shadow" href="#">Exportar</a>
+      </div>
+    </div>
   </div>
-</div>
-<hr>
-<div class="row">
-  <div class="col">
-    <form>
-      <b>Subir 1 Nivel Agricola:</b>
-      <div class="form-row">
-      <div class="col">
-        <label for="type">Terreno</label>
-        <select class="form-control form-control-sm" id="type" name="type">
-          <option value="Río">Río</option>
-          <option value="Llanura">Llanura</option>
-          <option value="Bosque">Bosque</option>
-          <option value="Pantano">Pantano</option>
-          <option value="Desierto">Desierto</option>
-          <option value="Costa">Costa</option>
-          <option value="Montaña">Montaña</option>
-        </select>
-      </div>
-      </div>
-      <div class="form-row">
-      <div class="col">
-        <br>
-        <a id="levelup_button" class="btn btn-primary btn-block" href="#">Subir</a>
-      </div>
-      </div>
-      <br>
-      <a href="https://github.com/abathreixo/guaramientas"><span class="badge badge-primary">Repositorio</span></a>
-    </form>
-  </div>
-</div>
+</form>
 </body>
 <script src="popup.js"></script>
+<!-- <script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/what-input/dist/what-input.min.js"></script>
+<script src="bower_components/foundation-sites/dist/js/foundation.min.js"></script> -->
 </html>

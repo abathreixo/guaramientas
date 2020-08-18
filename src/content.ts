@@ -22,14 +22,14 @@ async function levelup(): Promise<number> {
   let filterfiefs = allFiefs.filter(function (el) {
     return el.terrain == spread_troops_settings.type;
   });
+  console.log(filterfiefs);
   let money = await get_money();
   for (let i = 0; i < filterfiefs.length; i++) {
     let farmCost = filterfiefs[i].farms * 3000;
     if(money > farmCost) {
-      build_farm(filterfiefs[i].location).then(value => {
-        upgraded++;
-        money = money - farmCost;
-      });
+      let b_r = await build_farm(filterfiefs[i].location)
+      money = money - farmCost;
+      ++upgraded;
     } else {
       break;
     }

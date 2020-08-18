@@ -1,0 +1,21 @@
+{
+  "name": "srise_dashboard",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Néstor Casola Jiménez <ncasolajimenez@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/abathreixo/guaramientas",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "foundation-sites": "^6.6.3"
+  }
+}
