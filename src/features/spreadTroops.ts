@@ -2,6 +2,7 @@ import {CompleteFiefData, XYPair} from "../dataContainers";
 import {move_troop, split_troop} from "../serverCalls/troops";
 import {NoFreeTroopsError} from "../errors";
 import {read_fief} from "../serverCalls/read_fief";
+import {get_all_owned_fiefs} from "../serverCalls/get_all_owned_fiefs";
 
 
 export class SpreadTroops {
@@ -19,13 +20,34 @@ export class SpreadTroops {
 
     static async spread_troop_in_a_rectangle(
         fief: XYPair, first_corner: XYPair, second_corner: XYPair, units_per_group: number,
-        seed_troop_id: number=null
+        seed_troop_id: number=null, only_own_fiefs: boolean=true
     ): Promise<void> {
-        const target_coordinates = SpreadTroops.get_target_coordinates(first_corner, second_corner);
+        const target_coordinates = await SpreadTroops.get_target_coordinates(first_corner, second_corner, only_own_fiefs);
         return SpreadTroops.spread_troops(fief, target_coordinates, units_per_group, seed_troop_id);
     }
 
-    private static get_target_coordinates(first: XYPair, last: XYPair): XYPair[] {
+    private static async get_target_coordinates(first: XYPair, last: XYPair, only_own_fiefs: boolean): Promise<XYPair[]> {
+        if (only_own_fiefs) return await SpreadTroops.get_own_fiefs_in_rectangle(first, last);
+        return SpreadTroops.get_rectangle_coordinates(first, last);
+    }
+
+    private static async get_own_fiefs_in_rectangle(first: XYPair, last: XYPair): Promise<XYPair[]> {
+        const first_x = Math.min(first.x, last.x);
+        const first_y = Math.min(first.y, last.y);
+        const last_x = Math.max(first.x, last.x);
+        const last_y = Math.max(first.y, last.y);
+        const own_fiefs = await get_all_owned_fiefs();
+        let result = [];
+        for (let fief of own_fiefs) {
+            const location = fief.location;
+            if (first_x <= location.x && location.x <= last_x && first_y <= location.y && location.y <= last_y) {
+                result.push(location);
+            }
+        }
+        return result;
+    }
+
+    private static get_rectangle_coordinates(first: XYPair, last: XYPair): XYPair[] {
         let result = [];
         const first_x = Math.min(first.x, last.x);
         const first_y = Math.min(first.y, last.y);
