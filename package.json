@@ -1,24 +1,30 @@
 {
-  "name": "srise_dashboard",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "guaramientas",
+  "version": "0.3.0",
+  "description": "Herramientas para Guaranpis",
   "scripts": {
     "test": "jest",
     "build": "webpack"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["guaranpis"],
+  "author": "@ncasolajimenez, @abathreixo",
   "license": "ISC",
   "devDependencies": {
     "@types/chrome": "0.0.122",
     "@types/jest": "^25.1.4",
+    "css-loader": "^4.2.1",
     "jest": "^25.1.0",
+    "node-sass": "^4.14.1",
+    "resolve-url-loader": "^3.1.1",
+    "sass-loader": "^9.0.3",
+    "style-loader": "^1.2.1",
     "ts-jest": "^25.2.1",
     "ts-loader": "^6.2.1",
     "typescript": "^3.8.3",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11"
   },
-  "dependencies": {}
+  "dependencies": {
+    "foundation-sites": "^6.6.3"
+  }
 }
