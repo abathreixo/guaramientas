@@ -78,17 +78,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 async function run_me() {
-  const locations = [
-    new XYPair(323, 249),
-    new XYPair(332, 256),
-    new XYPair(330, 241),
-  ];
-  for (let location of locations) {
-    const fief = await readFief(location);
-    console.log(fief);
-  }
-  const fiefs = await readAllOwnedFiefs();
-  console.log(fiefs);
 }
 
 run_me().then(value => {console.log("Done");});
