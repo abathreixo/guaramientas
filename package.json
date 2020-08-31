@@ -1,12 +1,14 @@
 {
   "name": "guaramientas",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Herramientas para Guaranpis",
   "scripts": {
     "test": "jest",
     "build": "webpack"
   },
-  "keywords": ["guaranpis"],
+  "keywords": [
+    "guaranpis"
+  ],
   "author": "@ncasolajimenez, @abathreixo",
   "license": "ISC",
   "devDependencies": {

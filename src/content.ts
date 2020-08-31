@@ -4,6 +4,8 @@ import {XYPair} from "./dataContainers";
 import {get_all_owned_fiefs} from "./serverCalls/get_all_owned_fiefs";
 import {build_farm} from "./serverCalls/improve_fief";
 import {get_money} from "./serverCalls/read_info";
+import {readFief} from "./logic/serverCalls/retrieve/readFief";
+import {readAllOwnedFiefs} from "./logic/serverCalls/retrieve/readAllOwnedFiefs";
 
 let spread_troops_settings = {
   fief_x: 0,
@@ -76,6 +78,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 async function run_me() {
+  const locations = [
+    new XYPair(323, 249),
+    new XYPair(332, 256),
+    new XYPair(330, 241),
+  ];
+  for (let location of locations) {
+    const fief = await readFief(location);
+    console.log(fief);
+  }
+  const fiefs = await readAllOwnedFiefs();
+  console.log(fiefs);
 }
 
 run_me().then(value => {console.log("Done");});
