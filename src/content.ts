@@ -4,8 +4,6 @@ import {XYPair} from "./dataContainers";
 import {get_all_owned_fiefs} from "./serverCalls/get_all_owned_fiefs";
 import {build_farm} from "./serverCalls/improve_fief";
 import {get_money} from "./serverCalls/read_info";
-import {readFief} from "./logic/serverCalls/retrieve/readFief";
-import {readAllOwnedFiefs} from "./logic/serverCalls/retrieve/readAllOwnedFiefs";
 
 let spread_troops_settings = {
   fief_x: 0,

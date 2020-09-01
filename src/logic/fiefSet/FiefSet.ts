@@ -1,34 +1,43 @@
 import {Fief} from "../models/Fief";
 import {TerrainType} from "../utils/types";
+import {XYPair} from "../models/XYPair";
 
 
-export class FiefSet {
-    private readonly _fiefs: Set<Fief>;
-
+export class FiefSet extends Set<Fief> {
     constructor(fiefs: Fief[]) {
-        this._fiefs = new Set<Fief>(fiefs);
+        super(fiefs);
     }
 
     public contains(other: FiefSet): boolean {
-        for (let fief of other._fiefs) {
-            if (! this._fiefs.has(fief)) return false;
+        for (let fief of other) {
+            if (! this.has(fief)) return false;
         }
         return true;
     }
 
     public equals(other: FiefSet): boolean {
-        return (this._fiefs.size === other._fiefs.size) && this.contains(other);
+        return (this.size === other.size) && this.contains(other);
     }
 
-    public getFiefs(): Fief[] {
-        return [...this._fiefs.values()];
-    }
-
-    public filterFiefs(fn: (fief: Fief) => boolean): FiefSet {
-        this._fiefs.forEach((fief: Fief) => {
-            if (! fn(fief)) this._fiefs.delete(fief);
+    public getLocations(): XYPair[] {
+        let result = [];
+        this.forEach((fief: Fief) => {
+            result.push(fief.location);
         });
-        return this;
+        return result;
+    }
+
+    public async loadAllData(): Promise<void> {
+        for (let fief of this) await fief.getArmy();
+    }
+
+    //Filters
+    public filterFiefs(fn: (fief: Fief) => boolean): FiefSet {
+        const result = [];
+        this.forEach((fief: Fief) => {
+            if (fn(fief)) result.push(fief);
+        });
+        return new FiefSet(result);
     }
 
     public filterByFieldValue(fieldName: string, allowed: any[]): FiefSet {
@@ -48,12 +57,19 @@ export class FiefSet {
     }
 
     public async filterIfArmyExists(exists: boolean): Promise<FiefSet> {
-        for (let fief of this._fiefs) {
+        const result = [];
+        for (let fief of this) {
             const army = await fief.getArmy();
             const thisHasArmy: boolean = army.troops.size > 0;
-            if (thisHasArmy !== exists) this._fiefs.delete(fief);
+            if (thisHasArmy === exists) result.push(fief);
         }
-        return this;
+        return new FiefSet(result);
+    }
+
+    public filterLocationXY(minX: number, maxX: number, minY: number, maxY: number): FiefSet {
+        return this.filterFiefs((fief: Fief) => {
+            return minX <= fief.location.x && fief.location.x <= maxX && minY <= fief.location.y && fief.location.y <= maxY
+        });
     }
 
     public filterTerrain(allowed: TerrainType[]): FiefSet {
@@ -82,5 +98,10 @@ export class FiefSet {
 
     public filterIncome(min: number=Number.NEGATIVE_INFINITY, max: number=Number.POSITIVE_INFINITY): FiefSet {
         return this.filterByFieldRange('income', min, max);
+    }
+
+    // Composite filters
+    public getRebellingFiefs(): FiefSet {
+        return this.filterIsRebellious([true]).filterIncome(0);
     }
 }

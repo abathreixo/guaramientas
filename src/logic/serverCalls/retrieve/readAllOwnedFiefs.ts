@@ -1,5 +1,6 @@
 import {Fief} from "../../models/Fief";
 import {getTerrainType, parseCoordinates, parseDom, parseHtmlTable, parseIncome, parseInteger} from "../utils/parsing";
+import {FiefSet} from "../../fiefSet/FiefSet";
 
 
 async function fetchOwnedFiefsDataAsHtmlResponse(): Promise<string> {
@@ -40,15 +41,15 @@ function parseFiefRow(row: HTMLElement[]): Fief {
 }
 
 
-export async function readAllOwnedFiefs(): Promise<Fief[]> {
+export async function readAllOwnedFiefs(): Promise<FiefSet> {
     let response = await fetchOwnedFiefsDataAsHtmlResponse();
     let doc = parseDom(response);
     let table = doc.querySelector("#tusfeudos > table > tbody > tr > td > table > tbody") as HTMLElement;
     let data = parseHtmlTable(table);
-    let result = [];
+    let result = new FiefSet([]);
     for (let row of data) {
         let fief = parseFiefRow(row);
-        if (fief) result.push(fief);
+        if (fief) result.add(fief);
     }
     return result;
 }

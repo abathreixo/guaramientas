@@ -1,4 +1,4 @@
-import {Fief} from "./Fief";
+import {Fief, PlagueTypes} from "./Fief";
 import {XYPair} from "./XYPair";
 import {Army} from "./Army";
 import {Troop} from "./Troop";
@@ -17,16 +17,21 @@ describe('Fief', () => {
     const expectedArmy = new Army([new Troop(10, 0, 0, 0, 0, 0, location, null)]);
     const expectedQualityOfLife = 50;
     const expectedReservesPerPerson = 8;
+    const expectedPlague = PlagueTypes.ACTIVE;
 
     const usedFief = new Fief(
         location, 0,
         children, men, women, elders,
         0, 0, 0, reserves, false, 0,
-        expectedQualityOfLife, expectedArmy);
+        expectedQualityOfLife, expectedArmy, expectedPlague);
 
     async function runTests() {
         test('getArmy', async () => {
             expect(await tested.getArmy()).toEqual(expectedArmy);
+        });
+
+        test('getPlague', async () => {
+            expect(await tested.getPlague()).toEqual(expectedPlague);
         });
 
         test('qualityOfLife', async () => {
@@ -83,9 +88,21 @@ describe('Fief', () => {
             mockBuildFarm.mockClear();
         });
 
-        test('', async () => {
+        test('call', async () => {
             await tested.buildFarm();
             expect(mockBuildFarm).toHaveBeenCalledWith(location);
+        });
+    });
+
+    describe('exemptTaxes', function () {
+        let mockCall = jest.spyOn(FiefActions, 'exemptTaxes').mockImplementation(() => null);
+        beforeEach(() => {
+            mockCall.mockClear();
+        });
+
+        test('call', async () => {
+            await tested.exemptTaxes();
+            expect(mockCall).toHaveBeenCalledWith(location);
         });
     });
 });

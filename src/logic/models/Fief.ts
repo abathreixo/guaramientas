@@ -1,8 +1,8 @@
 import {XYPair} from "./XYPair";
 import {Army} from "./Army";
-import {TerrainType} from "../utils/types";
+import {PlagueType, TerrainType} from "../utils/types";
 import {readFief} from "../serverCalls/retrieve/readFief";
-import {buildFarm} from "../serverCalls/actions/fief";
+import {buildFarm, exemptTaxes} from "../serverCalls/actions/fief";
 
 
 export enum TerrainTypes {
@@ -16,6 +16,13 @@ export enum TerrainTypes {
     DESERT=7,
     RIVER=8,
     CITY=9
+}
+
+
+export enum PlagueTypes {
+    NONE=0,
+    QUARANTINE=1,
+    ACTIVE=2
 }
 
 
@@ -37,7 +44,8 @@ export class Fief {
         public readonly isRebellious: boolean,
         public readonly income: number,
         private _qualityOfLife: number,
-        private _army: Army
+        private _army: Army,
+        private _plague: PlagueType=null
     ) {
         if (null !== this._qualityOfLife) this.updateGlobalReservesPerPerson();
     }
@@ -51,6 +59,7 @@ export class Fief {
             const fief = await readFief(this.location);
             this._qualityOfLife = fief._qualityOfLife;
             this._army = fief._army;
+            this._plague = fief._plague;
         }
     }
 
@@ -69,8 +78,17 @@ export class Fief {
         return this._army;
     }
 
+    public async getPlague(): Promise<PlagueType> {
+        if (null === this._plague) await this.collectMissingData();
+        return this._plague;
+    }
+
     public async buildFarm(): Promise<void> {
         await buildFarm(this.location);
+    }
+
+    public async exemptTaxes(): Promise<void> {
+        await exemptTaxes(this.location);
     }
 
     private updateGlobalReservesPerPerson(): void {
