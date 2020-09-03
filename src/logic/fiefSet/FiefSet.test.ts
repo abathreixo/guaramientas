@@ -100,12 +100,24 @@ describe('FiefSet', function () {
             expect(new Set(fiefSet)).toEqual(new Set(fiefs));
         }
 
-        test('filterFiefs', async () => {
+        describe('basic filters', function () {
             function filterFunction(fief: Fief) {
                 return fief.isRebellious;
             }
 
-            assertState(tested.filterFiefs(filterFunction), fiefs.filter(filterFunction));
+            async function asyncFilterFunction(fief: Fief) {
+                return filterFunction(fief);
+            }
+
+
+            test('filterFiefs', () => {
+                assertState(tested.filterFiefs(filterFunction), fiefs.filter(filterFunction));
+            });
+
+            test('asyncFilterFiefs', async () => {
+                const output = await tested.asyncFilterFiefs(asyncFilterFunction);
+                assertState(output, fiefs.filter(filterFunction));
+            });
         });
 
         test('filterByFieldValue', () => {

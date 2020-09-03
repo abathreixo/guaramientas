@@ -1,4 +1,4 @@
-import {Fief} from "../models/Fief";
+import {Fief, PlagueTypes} from "../models/Fief";
 import {TerrainType} from "../utils/types";
 import {XYPair} from "../models/XYPair";
 
@@ -40,6 +40,14 @@ export class FiefSet extends Set<Fief> {
         return new FiefSet(result);
     }
 
+    public async asyncFilterFiefs(fn: (fief: Fief) => Promise<boolean>): Promise<FiefSet> {
+        const result = [];
+        for (let fief of this) {
+            if (await fn(fief)) result.push(fief);
+        }
+        return new FiefSet(result);
+    }
+
     public filterByFieldValue(fieldName: string, allowed: any[]): FiefSet {
         const allowedSet = new Set(allowed);
         return this.filterFiefs((fief: Fief) => {
@@ -57,13 +65,11 @@ export class FiefSet extends Set<Fief> {
     }
 
     public async filterIfArmyExists(exists: boolean): Promise<FiefSet> {
-        const result = [];
-        for (let fief of this) {
+        return this.asyncFilterFiefs(async (fief: Fief) => {
             const army = await fief.getArmy();
             const thisHasArmy: boolean = army.troops.size > 0;
-            if (thisHasArmy === exists) result.push(fief);
-        }
-        return new FiefSet(result);
+            return thisHasArmy === exists;
+        });
     }
 
     public filterLocationXY(minX: number, maxX: number, minY: number, maxY: number): FiefSet {
@@ -103,5 +109,11 @@ export class FiefSet extends Set<Fief> {
     // Composite filters
     public getRebellingFiefs(): FiefSet {
         return this.filterIsRebellious([true]).filterIncome(0);
+    }
+
+    public async getFiefsWithActivePlague(): Promise<FiefSet> {
+        return await this.asyncFilterFiefs(async (fief: Fief) => {
+            return await fief.getPlague() === PlagueTypes.ACTIVE;
+        });
     }
 }
