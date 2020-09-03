@@ -1,11 +1,14 @@
-import {SpreadTroops} from "./features/spreadTroops";
 import {CsvDataService} from "./features/csvDataService";
 import {XYPair} from "./dataContainers";
 import {get_all_owned_fiefs} from "./serverCalls/get_all_owned_fiefs";
 import {build_farm} from "./serverCalls/improve_fief";
 import {get_money} from "./serverCalls/read_info";
+import {SpreadTroops} from "./logic/features/SpreadTroops";
+import {readAllOwnedFiefs} from "./logic/serverCalls/retrieve/readAllOwnedFiefs";
+import {FiefSet} from "./logic/fiefSet/FiefSet";
 
-let spread_troops_settings = {
+
+let spreadTroopsSettings = {
   fief_x: 0,
   fief_y: 0,
   first_x: 0,
@@ -16,11 +19,12 @@ let spread_troops_settings = {
   type : "Llanura"
 };
 
+
 async function levelup(): Promise<number> {
   let upgraded = 0;
   let allFiefs = await get_all_owned_fiefs();
   let filterfiefs = allFiefs.filter(function (el) {
-    return el.terrain == spread_troops_settings.type;
+    return el.terrain == spreadTroopsSettings.type;
   });
   console.log(filterfiefs);
   let money = await get_money();
@@ -37,23 +41,45 @@ async function levelup(): Promise<number> {
   return upgraded;
 }
 
+
 async function exportcsv(): Promise<number> {
   let allFiefs = await get_all_owned_fiefs();
   CsvDataService.exportToCsv("feudos.csv", allFiefs);
   return allFiefs.length;
 }
 
+
+class AllOwnedFiefs {
+  private static allFiefs: FiefSet=null;
+  private constructor() {}
+
+  public static async get(): Promise<FiefSet> {
+    if (null === this.allFiefs) {
+      this.allFiefs = await readAllOwnedFiefs();
+    }
+    return this.allFiefs;
+  }
+}
+
+
+async function spreadTroops(): Promise<void> {
+  const location = new XYPair(spreadTroopsSettings.fief_x, spreadTroopsSettings.fief_y);
+  const allFiefs = await AllOwnedFiefs.get();
+
+  const spreadTroops = await SpreadTroops.buildFromFiefLocation(allFiefs, location, spreadTroopsSettings.n_troops);
+  await spreadTroops.toRectangle(
+      spreadTroopsSettings.first_x, spreadTroopsSettings.last_x,
+      spreadTroopsSettings.first_y, spreadTroopsSettings.last_y
+  );
+}
+
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if ('reload' == request) {
-    sendResponse(spread_troops_settings);
+    sendResponse(spreadTroopsSettings);
   }
   else if ('spread' == request) {
-    const location = new XYPair(spread_troops_settings.fief_x, spread_troops_settings.fief_y);
-    const first = new XYPair(spread_troops_settings.first_x, spread_troops_settings.first_y);
-    const last = new XYPair(spread_troops_settings.last_x, spread_troops_settings.last_y);
-    SpreadTroops.spread_troop_in_a_rectangle(location, first, last, spread_troops_settings.n_troops).then(value => {
-      sendResponse('done');
-    });
+    spreadTroops().then(value => {sendResponse('done');});
   }
   else if ('levelup' == request) {
     levelup()
@@ -68,7 +94,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   }
   else {
-    spread_troops_settings = request;
+    spreadTroopsSettings = request;
     sendResponse('ok');
   }
   return true;
