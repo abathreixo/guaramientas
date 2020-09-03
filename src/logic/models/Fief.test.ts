@@ -19,11 +19,12 @@ describe('Fief', () => {
     const expectedQualityOfLife = 50;
     const expectedReservesPerPerson = 8;
     const expectedPlague = PlagueTypes.ACTIVE;
+    const expectedFarms = 3;
 
     const usedFief = new Fief(
         location, 0,
         children, men, women, elders,
-        0, 0, 0, reserves, false, 0,
+        expectedFarms, 0, 0, reserves, false, 0,
         expectedQualityOfLife, expectedArmy, expectedPlague);
 
     async function runTests() {
@@ -67,7 +68,7 @@ describe('Fief', () => {
             tested = new Fief(
                 location, 0,
                 children, men, women, elders,
-                0, 0, 0, reserves, false, 0,
+                expectedFarms, 0, 0, reserves, false, 0,
                 null, null);
         });
 
@@ -76,7 +77,7 @@ describe('Fief', () => {
         test('get qualityOfLife without hitting the db', async () => {
             const anotherFief = new Fief(
                 location, 0, children, men, women, elders,
-                0, 0, 0, 2 * reserves, false,
+                expectedFarms, 0, 0, 2 * reserves, false,
                 0, null, null
             );
             expect(anotherFief.qualityOfLife).toEqual(2 * expectedQualityOfLife);
@@ -92,6 +93,7 @@ describe('Fief', () => {
         test('call', async () => {
             await tested.buildFarm();
             expect(mockBuildFarm).toHaveBeenCalledWith(location);
+            expect(tested.farms).toEqual(expectedFarms + 1);
         });
     });
 

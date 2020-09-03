@@ -37,7 +37,7 @@ export class Fief {
         public readonly men: number,
         public readonly women: number,
         public readonly elders: number,
-        public readonly farms: number,
+        private _farms: number,
         public readonly villages: number,
         public readonly lastHarvest: number,
         public readonly reserves: number,
@@ -73,6 +73,10 @@ export class Fief {
         return null;
     }
 
+    public get farms(): number {
+        return this._farms;
+    }
+
     public async getArmy(): Promise<Army> {
         if (null === this._army) await this.collectMissingData();
         return this._army;
@@ -85,6 +89,7 @@ export class Fief {
 
     public async buildFarm(): Promise<void> {
         await buildFarm(this.location);
+        this._farms += 1;
     }
 
     public async exemptTaxes(): Promise<void> {
