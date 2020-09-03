@@ -136,7 +136,7 @@ class Military {
             let troop = this.parseTroopRow(row, location);
             if (troop) troops.push(troop);
         }
-        return new Army(troops);
+        return new Army(troops, location);
     }
 
     private static parseTroopRow(row: HTMLElement[], location: XYPair): Troop {

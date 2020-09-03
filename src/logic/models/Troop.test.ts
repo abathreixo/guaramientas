@@ -13,13 +13,13 @@ function getEmptyFief(troopIds: number[]): Fief {
     }
     return new Fief(null, null, null, null, null, null,
         null, null, null, null, null, null, 10,
-        new Army(troops)
+        new Army(troops, null)
     );
 }
 
 
 describe('Troop', function () {
-    const mockMoveTroops = jest.spyOn(TroopActions, 'moveTroop').mockImplementation(async () => null);
+    const mockMoveTroops = jest.spyOn(TroopActions, 'moveTroops').mockImplementation(async () => null);
     const mockSplitTroops = jest.spyOn(TroopActions, 'splitTroop').mockImplementation(async () => null);
     const location = new XYPair(2, 4);
     const amount = 100;
@@ -33,7 +33,7 @@ describe('Troop', function () {
     test('move', async () => {
         const destination = new XYPair(5, 6);
         await tested.move(destination);
-        expect(mockMoveTroops).toHaveBeenCalledWith(tested.id, location, destination);
+        expect(mockMoveTroops).toHaveBeenCalledWith([tested.id], location, destination);
         expect(tested.destination).toEqual(destination);
     });
 

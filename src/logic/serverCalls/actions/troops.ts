@@ -10,13 +10,21 @@ export async function splitTroop(id: number, nRemainingUnits: number): Promise<v
 }
 
 
-export async function moveTroop(troopId: number, fief: XYPair, destination: XYPair): Promise<void> {
-    await post('/api/acciones/tropas/mover', {
+export async function moveTroops(troopIds: number[], fief: XYPair, destination: XYPair): Promise<void> {
+    const parameters = [];
+    parameters.push({
         x: fief.x,
         y: fief.y,
         xdestino: destination.x,
         ydestino: destination.y,
-        'tropasel%5B%5D': troopId,
         personajeseleccionado: 0,
     });
+
+    for (let id of troopIds) {
+        parameters.push({
+            'tropasel%5B%5D': id
+        });
+    }
+
+    await post('/api/acciones/tropas/mover', ...parameters);
 }

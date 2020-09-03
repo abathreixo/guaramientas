@@ -16,7 +16,7 @@ function getRandomArmy(nTroops: number, location: XYPair): Army {
         let troop = new Troop(i, randomInt(10), randomInt(), randomInt(), randomInt(), randomInt(), location, null);
         troops.push(troop);
     }
-    return new Army(troops);
+    return new Army(troops, location);
 }
 
 

@@ -1,9 +1,11 @@
-export async function post(url: string, parameters: Object, awaitForResponse: boolean=true): Promise<Response> {
+export async function post(url: string, ...parameters: Object[]): Promise<Response> {
     let body = '';
 
-    for (let key in parameters) {
-        if (body.length > 0) body += '&';
-        body += key + '=' + parameters[key];
+    for (let payload of parameters) {
+        for (let key in payload) {
+            if (body.length > 0) body += '&';
+            body += key + '=' + payload[key];
+        }
     }
 
     const request = await fetch(url, {
@@ -13,6 +15,6 @@ export async function post(url: string, parameters: Object, awaitForResponse: bo
             "content-type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
     });
-    if (awaitForResponse) await request.text();
+    await request.text();
     return request;
 }

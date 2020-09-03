@@ -1,5 +1,5 @@
 import {TroopType} from "../utils/types";
-import {moveTroop, splitTroop} from "../serverCalls/actions/troops";
+import {moveTroops, splitTroop} from "../serverCalls/actions/troops";
 import {XYPair} from "./XYPair";
 import {Army} from "./Army";
 import {readFief} from "../serverCalls/retrieve/readFief";
@@ -42,7 +42,7 @@ export class Troop {
     }
 
     public async move(destination: XYPair): Promise<void> {
-        await moveTroop(this.id, this.location, destination);
+        await moveTroops([this.id], this.location, destination);
         this._destination = destination;
     }
 
