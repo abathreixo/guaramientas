@@ -43,7 +43,7 @@ export class SpreadTroops {
     }
 
     public async toUndefended(): Promise<void> {
-        const selectedFiefs = await this.allFiefs.filterIfArmyExists(false);
+        const selectedFiefs = this.allFiefs.filterIsDefended(false);
         return await this.toDestinations(selectedFiefs.getLocations());
     }
 }

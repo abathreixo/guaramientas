@@ -13,7 +13,7 @@ function getEmptyFief(troopIds: number[]): Fief {
     }
     return new Fief(null, null, null, null, null, null,
         null, null, null, null, null, null, 10,
-        new Army(troops, null)
+        true, new Army(troops, null)
     );
 }
 

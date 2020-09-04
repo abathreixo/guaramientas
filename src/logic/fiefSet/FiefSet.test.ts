@@ -38,7 +38,7 @@ function getRandomFief(): Fief {
     return new Fief(
         location, terrain, children, men, women, elders,
         farms, villages, lastHarvest, reserves, isRebellious, income, qualityOfLife,
-        army
+        true, army
     );
 }
 
@@ -134,24 +134,6 @@ describe('FiefSet', function () {
                 fiefs.filter((fief: Fief) => {
                     return 3 <= fief.terrain && fief.terrain <= 5;
                 }));
-        });
-
-        test('filterIfArmyExists', async () => {
-            const undefendedFiefs = await tested.filterIfArmyExists(false);
-            const armedFiefs = await twin.filterIfArmyExists(true);
-            assertOriginalUnchanged();
-
-            expect(undefendedFiefs.size + armedFiefs.size).toEqual(fiefs.length);
-
-            for (let fief of undefendedFiefs) {
-                const army = await fief.getArmy();
-                expect(army.troops.size).toEqual(0);
-            }
-
-            for (let fief of armedFiefs) {
-                const army = await fief.getArmy();
-                expect(army.troops.size).toBeGreaterThan(0);
-            }
         });
 
         test('filterLocationXY', () => {

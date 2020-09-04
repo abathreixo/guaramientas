@@ -1,6 +1,7 @@
 import {Fief} from "../../models/Fief";
 import {getTerrainType, parseCoordinates, parseDom, parseHtmlTable, parseIncome, parseInteger} from "../utils/parsing";
 import {FiefSet} from "../../fiefSet/FiefSet";
+import {MapInfo, readMapInfo} from "./readMapInfo";
 
 
 async function fetchOwnedFiefsDataAsHtmlResponse(): Promise<string> {
@@ -17,7 +18,7 @@ function isValidFiefRow(row: HTMLElement[]): boolean {
 }
 
 
-function parseFiefRow(row: HTMLElement[]): Fief {
+function parseFiefRow(row: HTMLElement[], mapInfo: MapInfo): Fief {
     if ( ! isValidFiefRow(row) ) return null;
     const terrain = getTerrainType((row[0].children[0] as HTMLImageElement).title);
     const location = parseCoordinates(row[1].innerText);
@@ -32,23 +33,25 @@ function parseFiefRow(row: HTMLElement[]): Fief {
     const reserves = parseInteger(row[13].innerText);
     const rebellious: boolean = row[13].children.length > 1;
     const income = parseIncome(row[14].innerText);
+    const isDefended = mapInfo.isDefended(location);
 
     return new Fief(
         location, terrain, children, men, women, elders, farms, villages,
         lastHarvest, reserves, rebellious, income,
-        null, null
+        null, isDefended, null
     );
 }
 
 
 export async function readAllOwnedFiefs(): Promise<FiefSet> {
+    let mapInfo = await readMapInfo();
     let response = await fetchOwnedFiefsDataAsHtmlResponse();
     let doc = parseDom(response);
     let table = doc.querySelector("#tusfeudos > table > tbody > tr > td > table > tbody") as HTMLElement;
     let data = parseHtmlTable(table);
     let result = new FiefSet([]);
     for (let row of data) {
-        let fief = parseFiefRow(row);
+        let fief = parseFiefRow(row, mapInfo);
         if (fief) result.add(fief);
     }
     return result;

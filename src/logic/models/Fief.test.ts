@@ -24,8 +24,8 @@ describe('Fief', () => {
     const usedFief = new Fief(
         location, 0,
         children, men, women, elders,
-        expectedFarms, 0, 0, reserves, false, 0,
-        expectedQualityOfLife, expectedArmy, expectedPlague);
+        expectedFarms, 0, 0, reserves, false, 0, expectedQualityOfLife,
+        true, expectedArmy, expectedPlague);
 
     async function runTests() {
         test('getArmy', async () => {
@@ -69,7 +69,7 @@ describe('Fief', () => {
                 location, 0,
                 children, men, women, elders,
                 expectedFarms, 0, 0, reserves, false, 0,
-                null, null);
+                null, true, null);
         });
 
         runTests();
@@ -77,8 +77,8 @@ describe('Fief', () => {
         test('get qualityOfLife without hitting the db', async () => {
             const anotherFief = new Fief(
                 location, 0, children, men, women, elders,
-                expectedFarms, 0, 0, 2 * reserves, false,
-                0, null, null
+                expectedFarms, 0, 0, 2 * reserves, false, 0,
+                null, true, null
             );
             expect(anotherFief.qualityOfLife).toEqual(2 * expectedQualityOfLife);
         });

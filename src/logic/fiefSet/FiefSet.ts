@@ -64,14 +64,6 @@ export class FiefSet extends Set<Fief> {
         });
     }
 
-    public async filterIfArmyExists(exists: boolean): Promise<FiefSet> {
-        return this.asyncFilterFiefs(async (fief: Fief) => {
-            const army = await fief.getArmy();
-            const thisHasArmy: boolean = army.troops.size > 0;
-            return thisHasArmy === exists;
-        });
-    }
-
     public filterLocationXY(minX: number, maxX: number, minY: number, maxY: number): FiefSet {
         return this.filterFiefs((fief: Fief) => {
             return minX <= fief.location.x && fief.location.x <= maxX && minY <= fief.location.y && fief.location.y <= maxY
@@ -104,6 +96,10 @@ export class FiefSet extends Set<Fief> {
 
     public filterIncome(min: number=Number.NEGATIVE_INFINITY, max: number=Number.POSITIVE_INFINITY): FiefSet {
         return this.filterByFieldRange('income', min, max);
+    }
+
+    public filterIsDefended(isDefended: boolean): FiefSet {
+        return this.filterByFieldValue('isDefended', [isDefended]);
     }
 
     // Composite filters

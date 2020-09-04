@@ -129,6 +129,10 @@ class Military {
         return new Military(army, location);
     }
 
+    public get isDefended(): boolean {
+        return this.army.troops.size > 0;
+    }
+
     private static parseArmy(table: HTMLElement, location: XYPair): Army {
         const data = parseHtmlTable(table);
         let troops = [];
@@ -171,12 +175,11 @@ export async function readFief(location: XYPair): Promise<Fief> {
     const military = Military.fromHtmlElement(
         doc.getElementById('checkcambiatodos').parentElement.parentElement.parentElement, location
     );
-
     return new Fief(
         location,
         geography.terrain,
         population.children, population.men, population.women, population.elders,
         economy.farms, economy.villages, economy.lastHarvest, economy.reserves, economy.isRebellious, economy.income,
-        economy.qualityOfLife, military.army
+        economy.qualityOfLife, military.isDefended, military.army
     )
 }

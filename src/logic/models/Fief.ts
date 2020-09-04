@@ -44,8 +44,9 @@ export class Fief {
         public readonly isRebellious: boolean,
         public readonly income: number,
         private _qualityOfLife: number,
+        public readonly isDefended: boolean,
         private _army: Army,
-        private _plague: PlagueType=null
+        private _plague: PlagueType=null,
     ) {
         if (null !== this._qualityOfLife) this.updateGlobalReservesPerPerson();
     }
