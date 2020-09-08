@@ -23,6 +23,7 @@ class ArmyDispatcher {
             if (null === detachedTroop) return null;
             this.amount -= detachedTroop.amount;
             result.push(detachedTroop);
+            if (this.amount > 0) this.activeTroopIndex += 1;
         }
         return new Army(result, this.location);
     }
@@ -55,7 +56,7 @@ export async function sendTroopsToPlaguedFiefs(allFiefs: FiefSet, army: Army): P
     for (let fief of plaguedFiefs) {
         const nUnitsNeeded = fief.children + fief.men + fief.women + fief.elders;
         const dispatchedArmy = await armyDispatcher.detachUnits(nUnitsNeeded);
-        if (null === dispatchedArmy) return ;
+        if (null === dispatchedArmy) return;
         await dispatchedArmy.move(fief.location);
     }
 }
