@@ -5,12 +5,12 @@ import {
     parseDom,
     parseHtmlTable,
     parseIncome,
-    parseInteger
+    parseInteger, removeBlanks, removeCharacters
 } from "../utils/parsing";
 import {XYPair} from "../../models/XYPair";
-import {Fief} from "../../models/Fief";
+import {Fief, PlagueTypes} from "../../models/Fief";
 import {Army} from "../../models/Army";
-import {TerrainType} from "../../utils/types";
+import {PlagueType, TerrainType} from "../../utils/types";
 
 
 async function fetchFiefDataAsHtmlResponse(location: XYPair): Promise<string> {
@@ -47,16 +47,25 @@ function getTableNumber(label: string, nodes: NodeList, nextSiblings: number=1):
 
 class Geography {
     constructor(
-        public terrain: TerrainType
+        public terrain: TerrainType,
+        public plagueType: PlagueType
     ) {
     }
 
     public static fromHtmlElement(baseElement: HTMLElement): Geography {
-        return new Geography(this.getTerrain(baseElement));
+        return new Geography(this.getTerrain(baseElement), this.getPlagueType(baseElement));
     }
 
     private static getTerrain(baseElement: HTMLElement): TerrainType {
         return getTerrainType(getTableValue('Terreno:', baseElement.childNodes));
+    }
+
+    private static getPlagueType(baseElement: HTMLElement): PlagueType {
+        const node = getNodeContaining('Epidemia:', baseElement.childNodes, 1);
+        if (null === node) return PlagueTypes.NONE;
+        const text = removeBlanks(node.childNodes[2].nodeValue);
+        if (text === 'Encuarentena') return PlagueTypes.QUARANTINE;
+        return PlagueTypes.ACTIVE;
     }
 }
 
@@ -180,6 +189,7 @@ export async function readFief(location: XYPair): Promise<Fief> {
         geography.terrain,
         population.children, population.men, population.women, population.elders,
         economy.farms, economy.villages, economy.lastHarvest, economy.reserves, economy.isRebellious, economy.income,
-        economy.qualityOfLife, military.isDefended, military.army
+        economy.qualityOfLife, military.isDefended, military.army,
+        geography.plagueType
     )
 }
