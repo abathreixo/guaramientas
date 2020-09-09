@@ -49,12 +49,14 @@ class ArmyDispatcher {
 }
 
 
-export async function sendTroopsToPlaguedFiefs(allFiefs: FiefSet, army: Army): Promise<void > {
+export async function sendTroopsToPlaguedFiefs(
+    allFiefs: FiefSet, army: Army, useMaxPopulation: boolean=true
+): Promise<void > {
     const plaguedFiefs = await allFiefs.getFiefsWithActivePlague();
     const armyDispatcher = new ArmyDispatcher(army);
 
     for (let fief of plaguedFiefs) {
-        const nUnitsNeeded = fief.children + fief.men + fief.women + fief.elders;
+        const nUnitsNeeded = useMaxPopulation ? fief.villages * 1001: fief.children + fief.men + fief.women + fief.elders;
         const dispatchedArmy = await armyDispatcher.detachUnits(nUnitsNeeded);
         if (null === dispatchedArmy) return;
         await dispatchedArmy.move(fief.location);
