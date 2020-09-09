@@ -2,7 +2,7 @@ import {XYPair} from "./XYPair";
 import {Army} from "./Army";
 import {PlagueType, TerrainType} from "../utils/types";
 import {readFief} from "../serverCalls/retrieve/readFief";
-import {buildFarm, exemptTaxes} from "../serverCalls/actions/fief";
+import {buildFarm, exemptTaxes, quarantine} from "../serverCalls/actions/fief";
 
 
 export enum TerrainTypes {
@@ -95,6 +95,10 @@ export class Fief {
 
     public async exemptTaxes(): Promise<void> {
         await exemptTaxes(this.location);
+    }
+
+    public async quarantine(): Promise<void> {
+        await quarantine(this.location);
     }
 
     private updateGlobalReservesPerPerson(): void {

@@ -108,4 +108,16 @@ describe('Fief', () => {
             expect(mockCall).toHaveBeenCalledWith(location);
         });
     });
+
+    describe('quarantine', function () {
+        let mockCall = jest.spyOn(FiefActions, 'quarantine').mockImplementation(() => null);
+        beforeEach(() => {
+            mockCall.mockClear();
+        });
+
+        test('call', async () => {
+            await tested.quarantine();
+            expect(mockCall).toHaveBeenCalledWith(location);
+        });
+    });
 });

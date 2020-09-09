@@ -12,3 +12,9 @@ export async function exemptTaxes(fief: XYPair): Promise<void> {
     const url = `/api/acciones/feudos/exentoimpuestos?x=${fief.x}&y=${fief.y}`;
     await post(url, null);
 }
+
+
+export async function quarantine(fief: XYPair): Promise<void> {
+    const url = `/api/acciones/usuarios/cuarentena?x=${fief.x}&y=${fief.y}`;
+    await post(url, null);
+}
